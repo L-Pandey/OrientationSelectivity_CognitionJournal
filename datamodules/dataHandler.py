@@ -1,7 +1,3 @@
-# ImageFolder is a torchvision class used to create a dataset with images and labels.
-# This returns a dataset which need to be wrapped with a Dataloader.
-
-
 import os
 from typing import Any, Callable, List, Optional, Tuple, Union
 
