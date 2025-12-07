@@ -1,3 +1,8 @@
+'''
+Creates datamodule for training the encoder using 
+self-supervised learning
+'''
+
 import os
 from typing import Any, Callable, List, Optional, Sequence, Tuple
 from torch.utils.data import DataLoader

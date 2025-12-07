@@ -1,3 +1,8 @@
+'''
+Creates datamodule to train and test the linear probe
+using supervised learning.
+'''
+
 import os
 from typing import Any, Callable, List, Optional, Tuple, Union
 
