@@ -70,3 +70,91 @@ class PixelScrambleTransform:
                 scrambled_image[i*self.patch_size:(i+1)*self.patch_size, j*self.patch_size:(j+1)*self.patch_size, :] = patches[idx]
                 idx += 1
         return scrambled_image
+    
+
+def get_torch_transforms(args):
+    # data transforms
+    if args.transforms == 'gb':
+        trans = transforms.Compose([
+        transforms.RandomApply([
+        transforms.GaussianBlur(kernel_size=(7, 7), sigma=(0.1, 2.0))
+        ], p=0.5),
+        transforms.ToTensor()
+        ])
+    elif args.transforms == 'gs':
+        trans = transforms.Compose([
+        transforms.RandomGrayscale(p=0.2),
+        transforms.ToTensor()
+        ])
+    elif args.transforms == 'rc':
+        trans = transforms.Compose([
+        transforms.RandomResizedCrop(size=(64, 64), scale=(0.08, 1.0), ratio=(0.75, 1.3333)),
+        transforms.ToTensor()
+        ])
+    elif args.transforms == 'rhf':
+        trans = transforms.Compose([
+        transforms.RandomHorizontalFlip(p=0.5),
+        transforms.ToTensor()
+        ])
+    elif args.transforms == 'rhf_highProb':
+        trans = transforms.Compose([
+        transforms.RandomHorizontalFlip(p=0.9),
+        transforms.ToTensor()
+        ])
+    elif args.transforms == 'rhf_lowProb':
+        trans = transforms.Compose([
+        transforms.RandomHorizontalFlip(p=0.2),
+        transforms.ToTensor()
+        ])
+    elif args.transforms == 'cj':
+        trans = transforms.Compose([
+        transforms.RandomApply([
+        transforms.ColorJitter(brightness=[0.19999999999999996, 1.8], contrast=[0.19999999999999996, 1.8], saturation=[0.19999999999999996, 1.8], hue=[-0.2, 0.2])
+        ], p=0.8),
+        transforms.ToTensor()
+        ])
+    elif args.transforms == 'all':
+        # gb
+        trans = transforms.Compose([
+        transforms.RandomApply([
+        transforms.GaussianBlur(kernel_size=(7, 7), sigma=(0.1, 2.0))
+        ], p=0.5),
+        # grayscale 
+        transforms.RandomGrayscale(p=0.2),
+        # crop
+        transforms.RandomResizedCrop(size=(64, 64), scale=(0.08, 1.0), ratio=(0.75, 1.3333)),
+        # hflip
+        transforms.RandomHorizontalFlip(p=0.5),
+        # cj
+        transforms.RandomApply([
+        transforms.ColorJitter(brightness=[0.19999999999999996, 1.8], contrast=[0.19999999999999996, 1.8], saturation=[0.19999999999999996, 1.8], hue=[-0.2, 0.2])
+        ], p=0.8),
+        # resize to desired resolution
+        transforms.Resize((args.resize_dims, args.resize_dims)),
+        # final transform
+        transforms.ToTensor()
+        ])
+    elif args.transforms == 'none':
+        trans = transforms.Compose([
+        transforms.ToTensor()
+        ])
+    elif args.transforms == 'resize':
+        trans = transforms.Compose([
+        transforms.Resize((args.resize_dims, args.resize_dims)),
+        transforms.ToTensor()
+        ])
+    elif args.transforms == 'cropped_resize': # custom transform class
+        trans = transforms.Compose([
+            CenterCropLongDimension(),
+            transforms.Resize((args.resize_dims, args.resize_dims)),
+            transforms.ToTensor()
+        ])
+    elif args.transforms == 'spatialScrambling':
+        trans = transforms.Compose([
+        PixelScrambleTransform(args.spatialTransform_patchsize, (args.image_size, args.image_size)),
+        transforms.ToTensor()
+        ])
+    else:
+        raise ValueError("Incorrect transform selected. Transform not found in the list")
+    
+    return trans

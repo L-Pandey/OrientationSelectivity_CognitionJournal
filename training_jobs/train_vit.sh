@@ -13,7 +13,7 @@ do
         --patch_size 8 \
         --head 6 \
         --val_split 0.05 \
-        --transforms transform_none \
+        --transforms none \
         --loss_ver v2 \
         --resize_dims 64 \
         --dataset_size 160000 \
