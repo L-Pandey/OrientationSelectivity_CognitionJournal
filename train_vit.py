@@ -23,7 +23,7 @@ import torch
 import torchvision.transforms as transforms
 
 # model
-from models.vit_contrastive import Backbone, configuration, LitClassifier
+from models.vit import Backbone, configuration, LitClassifier
 
 def create_argparser():
     parser = ArgumentParser()
